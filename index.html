@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🔥 SPICY BUBBLE POPPER 🔥 | Combo + Bombs + Golden</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1a0f0a 0%, #2c1a12 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+        }
+
+        .game-wrapper {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 72px;
+            padding: 20px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, #fff5e8, #ffede0);
+            border-radius: 60px;
+            padding: 24px 28px 32px 28px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05), 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 6px 0;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ff6a4b, #ff2e5b, #ffb347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tagline {
+            margin: 0 0 16px 0;
+            font-size: 0.85rem;
+            color: #c47a44;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 20px;
+            background: #2a1e18;
+            padding: 12px 24px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            color: #ffefcf;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .stat-card span:first-child {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .combo-indicator {
+            background: #ff6a4b;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px black;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background: #ff4500; }
+            100% { transform: scale(1); }
+        }
+
+        .canvas-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            background: radial-gradient(circle at 30% 20%, #ffe6c7, #ffd8b5);
+            border-radius: 48px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), inset 0 0 0 3px rgba(255,215,150,0.8);
+            cursor: pointer;
+            width: 100%;
+            height: auto;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            display: block;
+        }
+
+        .control {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff8c42, #ff5e2e);
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 10px 28px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s ease;
+            font-family: inherit;
+            box-shadow: 0 5px 0 #a13d1a;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #a13d1a;
+        }
+
+        .message-area {
+            margin-top: 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #ffedd5;
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 40px;
+            color: #b64516;
+            border-left: 4px solid #ff5e2e;
+            border-right: 4px solid #ff5e2e;
+        }
+
+        @media (max-width: 550px) {
+            .game-container { padding: 16px 18px 24px 18px; }
+            .stat-card { font-size: 1.2rem; }
+            button { padding: 6px 18px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-wrapper">
+    <div class="game-container">
+        <h1>🌶️ SPICY BUBBLE POPPER 🔥</h1>
+        <div class="tagline">⚡ COMBO • GOLDEN • BOMBS ⚡</div>
+
+        <div class="stats">
+            <div class="stat-card"><span>🎯 SCORE</span> <span id="scoreValue">0</span></div>
+            <div class="stat-card"><span>⏱️ TIME</span> <span id="timerValue">30</span>s</div>
+            <div class="stat-card"><span>⚡ COMBO</span> <span id="comboValue">0</span>x</div>
+        </div>
+        <div class="combo-indicator" id="comboGlow">🔥 x0 multiplier</div>
+
+        <div class="canvas-area">
+            <canvas id="gameCanvas" width="500" height="500"></canvas>
+        </div>
+
+        <div class="control">
+            <button id="resetButton">🔄 RESTART</button>
+        </div>
+        <div class="message-area" id="gameMessage">💥 pop NORMAL (blue/pink) | 💣 BOMB = -3 | ⭐ GOLDEN = +5 💥</div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Game state
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        let animationId = null;
+        let countdownInterval = null;
+        let spawnInterval = null;
+        
+        // COMBO SYSTEM
+        let combo = 0;
+        let lastPopTime = 0;
+        const COMBO_WINDOW_MS = 1500; // 1.5 sec to keep combo alive
+        
+        // Bubble arrays
+        let bubbles = [];
+        
+        // Canvas size
+        let width = 500;
+        let height = 500;
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Spawn settings (dynamic)
+        let baseSpawnRate = 650; // ms
+        let currentSpawnRate = 650;
+        
+        const MAX_BUBBLES = 14;
+        
+        // Bubble types
+        const TYPE_NORMAL = 'normal';
+        const TYPE_BOMB = 'bomb';
+        const TYPE_GOLDEN = 'golden';
+        
+        // Color schemes
+        const normalColors = ['#6bc5ff', '#ff8faa', '#b280ff', '#ffb347', '#5fd0a0'];
+        const bombColor = '#2f2f2f';
+        const goldenColor = '#FFD700';
+        
+        // Helper
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+        
+        function checkOverlap(newBubble, existing, margin=15) {
+            for(let b of existing) {
+                let dx = b.x - newBubble.x;
+                let dy = b.y - newBubble.y;
+                let minDist = b.radius + newBubble.radius + margin;
+                if(Math.hypot(dx, dy) < minDist) return true;
+            }
+            return false;
+        }
+        
+        function createBubble(existingBubbles, forcedType = null) {
+            let radius = 24 + Math.floor(Math.random() * 8); // 24-31px
+            let type = forcedType;
+            if(!type) {
+                let rand = Math.random();
+                if(rand < 0.2) { // 20% bomb
+                    type = TYPE_BOMB;
+                    radius = 26; // bomb a bit bigger
+                } else if(rand < 0.32) { // 12% golden
+                    type = TYPE_GOLDEN;
+                    radius = 22;
+                } else {
+                    type = TYPE_NORMAL;
+                }
+            }
+            
+            let color;
+            if(type === TYPE_BOMB) color = bombColor;
+            else if(type === TYPE_GOLDEN) color = goldenColor;
+            else color = normalColors[Math.floor(Math.random() * normalColors.length)];
+            
+            let maxAttempts = 40;
+            for(let i=0; i<maxAttempts; i++) {
+                let x = random(radius + 15, width - radius - 15);
+                let y = random(radius + 20, height - radius - 20);
+                let newBubble = { x, y, radius, type, color };
+                if(!checkOverlap(newBubble, existingBubbles, 12)) {
+                    return newBubble;
+                }
+            }
+            // fallback
+            return {
+                x: random(70, width-70),
+                y: random(70, height-70),
+                radius: radius,
+                type: type,
+                color: color
+            };
+        }
+        
+        function spawnBubble() {
+            if(!gameActive) return;
+            if(bubbles.length >= MAX_BUBBLES) return;
+            let newBubble = createBubble(bubbles);
+            bubbles.push(newBubble);
+        }
+        
+        // update spawn rate based on score (spicier!)
+        function updateSpawnRate() {
+            let newRate = baseSpawnRate - Math.floor(score / 12) * 25;
+            if(newRate < 280) newRate = 280;
+            if(newRate !== currentSpawnRate) {
+                currentSpawnRate = newRate;
+                if(spawnInterval) {
+                    clearInterval(spawnInterval);
+                    spawnInterval = setInterval(() => {
+                        if(gameActive) spawnBubble();
+                    }, currentSpawnRate);
+                }
+            }
+        }
+        
+        // POP logic with twist
+        function popBubble(index) {
+            if(!gameActive) return false;
+            if(index < 0 || index >= bubbles.length) return false;
+            
+            const bubble = bubbles[index];
+            const now = Date.now();
+            
+            // combo logic: if last pop within window, increase combo, else reset to 1
+            if(now - lastPopTime < COMBO_WINDOW_MS) {
+                combo++;
+            } else {
+                combo = 1;
+            }
+            lastPopTime = now;
+            
+            let pointsEarned = 0;
+            let message = "";
+            
+            // SPICY TWIST: different bubble effects
+            if(bubble.type === TYPE_BOMB) {
+                pointsEarned = -3;
+                message = `💣 BOMB! -3 points 💣`;
+                combo = Math.max(0, combo - 2); // bomb breaks combo hard!
+                // shake effect visual
+                document.getElementById('comboGlow').style.background = "#8b0000";
+                setTimeout(() => {
+                    if(gameActive) document.getElementById('comboGlow').style.background = "#ff6a4b";
+                }, 300);
+            } 
+            else if(bubble.type === TYPE_GOLDEN) {
+                let multiplier = Math.max(1, combo);
+                pointsEarned = 5 * multiplier;
+                message = `⭐ GOLDEN! +${pointsEarned} points (${combo}x combo!) ⭐`;
+                document.getElementById('comboGlow').style.background = "#ffaa33";
+                setTimeout(() => {
+                    if(gameActive) document.getElementById('comboGlow').style.background = "#ff6a4b";
+                }, 400);
+            } 
+            else { // normal bubble
+                let multiplier = Math.max(1, combo);
+                pointsEarned = 1 * multiplier;
+                message = `✨ +${pointsEarned} (${combo}x combo!) ✨`;
+            }
+            
+            score += pointsEarned;
+            if(score < 0) score = 0;
+            
+            document.getElementById('scoreValue').innerText = score;
+            document.getElementById('comboValue').innerText = combo;
+            
+            // update combo glow
+            let comboGlow = document.getElementById('comboGlow');
+            if(combo >= 5) comboGlow.innerHTML = `💢 INSANE ${combo}x MULTIPLIER 💢`;
+            else if(combo >= 3) comboGlow.innerHTML = `⚡ ${combo}x COMBO! ⚡`;
+            else comboGlow.innerHTML = `🔥 ${combo}x multiplier 🔥`;
+            
+            // show message
+            const msgDiv = document.getElementById('gameMessage');
+            msgDiv.innerText = message;
+            setTimeout(() => {
+                if(gameActive) msgDiv.innerText = "💥 POP! Watch for 💣 bombs & ⭐ golden! 💥";
+                else msgDiv.innerText = "🔥 GAME OVER — RESTART 🔥";
+            }, 900);
+            
+            // remove bubble
+            bubbles.splice(index, 1);
+            
+            // spawn rate gets faster with high score
+            updateSpawnRate();
+            
+            return true;
+        }
+        
+        // DRAW everything with extra spice (glow, bomb skull, star)
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#ffdbb5';
+            ctx.fillRect(0, 0, width, height);
+            
+            // fun particle effect dots
+            ctx.save();
+            ctx.globalAlpha = 0.25;
+            for(let i=0; i<200; i++) {
+                ctx.beginPath();
+                ctx.arc((i*199)%width, (i*73)%height, 1.8, 0, Math.PI*2);
+                ctx.fillStyle = '#c08040';
+                ctx.fill();
+            }
+            ctx.restore();
+            
+            for(let b of bubbles) {
+                ctx.save();
+                // shadow glow effect
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI*2);
+                
+                if(b.type === TYPE_GOLDEN) {
+                    let grad = ctx.createLinearGradient(b.x-8, b.y-8, b.x+8, b.y+8);
+                    grad.addColorStop(0, '#FFD966');
+                    grad.addColorStop(1, '#FFAA33');
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.fillStyle = '#b87c00';
+                    ctx.font = `${Math.floor(b.radius-6)}px "Segoe UI"`;
+                    ctx.shadowBlur = 4;
+                    ctx.fillText("⭐", b.x-12, b.y+8);
+                } 
+                else if(b.type === TYPE_BOMB) {
+                    let grad = ctx.createRadialGradient(b.x-5, b.y-5, 3, b.x, b.y, b.radius);
+                    grad.addColorStop(0, '#4a4a4a');
+                    grad.addColorStop(1, '#1a1a1a');
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.fillStyle = '#ff5e5e';
+                    ctx.font = `bold ${Math.floor(b.radius-6)}px "Segoe UI"`;
+                    ctx.fillText("💣", b.x-12, b.y+10);
+                } 
+                else {
+                    let grad = ctx.createRadialGradient(b.x-5, b.y-5, 5, b.x, b.y, b.radius);
+                    grad.addColorStop(0, b.color);
+                    grad.addColorStop(1, '#ffaa88');
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,210,0.9)';
+                    ctx.font = `${Math.floor(b.radius-8)}px "Segoe UI"`;
+                    ctx.fillText("●", b.x-8, b.y+8);
+                }
+                
+                ctx.restore();
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius-1, 0, Math.PI*2);
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+            
+            if(!gameActive && timeLeft === 0) {
+                ctx.font = 'bold 32px "Segoe UI"';
+                ctx.fillStyle = '#aa3e1c';
+                ctx.shadowBlur = 0;
+                ctx.fillText('🔥 GAME OVER 🔥', width/2-130, height/2-30);
+                ctx.font = '18px system-ui';
+                ctx.fillStyle = '#8b4c2a';
+                ctx.fillText('press RESTART for spicy round', width/2-125, height/2+30);
+            }
+        }
+        
+        function handleCanvasClick(e) {
+            if(!gameActive) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if(e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            let mouseX = (clientX - rect.left) * scaleX;
+            let mouseY = (clientY - rect.top) * scaleY;
+            
+            for(let i=bubbles.length-1; i>=0; i--) {
+                let b = bubbles[i];
+                let dx = mouseX - b.x;
+                let dy = mouseY - b.y;
+                if(Math.hypot(dx, dy) <= b.radius) {
+                    popBubble(i);
+                    break;
+                }
+            }
+        }
+        
+        function startTimer() {
+            if(countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                if(!gameActive) return;
+                if(timeLeft <= 1) {
+                    timeLeft = 0;
+                    document.getElementById('timerValue').innerText = "0";
+                    endGame();
+                } else {
+                    timeLeft--;
+                    document.getElementById('timerValue').innerText = timeLeft;
+                }
+            }, 1000);
+        }
+        
+        function endGame() {
+            gameActive = false;
+            if(spawnInterval) clearInterval(spawnInterval);
+            if(countdownInterval) clearInterval(countdownInterval);
+            spawnInterval = null;
+            countdownInterval = null;
+            document.getElementById('gameMessage').innerText = `🏆 SPICY END! Score: ${score} | Combo master? 🏆`;
+        }
+        
+        function resetGame() {
+            if(spawnInterval) clearInterval(spawnInterval);
+            if(countdownInterval) clearInterval(countdownInterval);
+            if(animationId) cancelAnimationFrame(animationId);
+            
+            gameActive = true;
+            score = 0;
+            combo = 0;
+            timeLeft = 30;
+            bubbles = [];
+            currentSpawnRate = baseSpawnRate;
+            
+            document.getElementById('scoreValue').innerText = "0";
+            document.getElementById('timerValue').innerText = "30";
+            document.getElementById('comboValue').innerText = "0";
+            document.getElementById('comboGlow').innerHTML = "🔥 x0 multiplier";
+            document.getElementById('comboGlow').style.background = "#ff6a4b";
+            
+            // add 4 starter bubbles with variety
+            for(let i=0; i<5; i++) {
+                let starterType = null;
+                if(i===0) starterType = TYPE_GOLDEN;
+                else if(i===1) starterType = TYPE_BOMB;
+                else starterType = TYPE_NORMAL;
+                let newBubble = createBubble(bubbles, starterType);
+                bubbles.push(newBubble);
+            }
+            
+            spawnInterval = setInterval(() => {
+                if(gameActive) spawnBubble();
+            }, currentSpawnRate);
+            
+            startTimer();
+            
+            function animate() {
+                draw();
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+        
+        canvas.addEventListener('click', handleCanvasClick);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const fakeEvent = { clientX: touch.clientX, clientY: touch.clientY };
+            handleCanvasClick(fakeEvent);
+        }, { passive: false });
+        
+        document.getElementById('resetButton').addEventListener('click', () => resetGame());
+        
+        resetGame();
+    })();
+</script>
+</body>
+</html>
